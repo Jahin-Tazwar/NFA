@@ -24,7 +24,7 @@ void advance(Lexer* lexer) {
 }
 
 void skip_whitespaces(Lexer* lexer) {
-	while(lexer -> current_char != ' ') {
+	while(lexer -> current_char == ' ') {
 		advance(lexer);
 	}
 }
@@ -63,5 +63,41 @@ Token identifier(Lexer* lexer) {
 		token.type = TOKEN_IDENTIFIER;
 	}
 
+	return token;
+}
+
+Token get_next_token(Lexer* lexer) {
+	while(lexer -> current_char != '\0') {
+		if(lexer -> current_char == ' ') {
+			skip_whitespaces(lexer);
+			continue;
+		}
+
+		if(isdigit(lexer -> current_char)) {
+			return number(lexer);
+		}
+
+		if(isalnum(lexer -> current_char)) {
+			return identifier(lexer);
+		}
+
+		if(lexer -> current_char == '+') {
+			advance(lexer);
+			Token token = {TOKEN_PLUS, "+"}; // same as token.type and token.value
+			return token;
+		}
+
+		if(lexer -> current_char == '=') {
+			advance(lexer);
+			Token token = {TOKEN_EQUAL, "="};
+			return token;
+		}
+
+		advance(lexer);
+		Token token = {TOKEN_UNKNOWN, "?"};
+		return token;
+	}
+
+	Token token = {TOKEN_EOF, "EOF"};
 	return token;
 }

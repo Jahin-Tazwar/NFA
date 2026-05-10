@@ -1,4 +1,4 @@
-#ifdef TOKEN_H
+#ifndef TOKEN_H
 #define TOKEN_H
 
 typedef enum {
@@ -17,7 +17,7 @@ typedef enum {
     TOKEN_RPAREN,// )
 
     TOKEN_EOF, // End Of File
-    TOKEN_UNNOWN
+    TOKEN_UNKNOWN
 } TokenType;
 
 typedef struct {
