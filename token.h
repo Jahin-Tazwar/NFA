@@ -1,23 +1,28 @@
 #ifndef TOKEN_H
-#define TOKEN_H
+#define TOKEN_H 
 
 typedef enum {
     TOKEN_NUMBER,
-    TOKEN_LET,
-    TOKEN_IDENTIFIER,
+    TOKEN_LET,         
+    TOKEN_IDENTIFIER, /*|---Variable names
+                    ├── Function names
+                    ├── Class names
+                    ├── Object names
+                    └── etc.*/
 
     //Math operators
     TOKEN_PLUS,
     TOKEN_MINUS,
-    TOKEN_STAR,
     TOKEN_SLASH,
+    TOKEN_STAR,
     TOKEN_EQUAL,
 
-    TOKEN_LPAREN,// (
-    TOKEN_RPAREN,// )
+    // ()
+    TOKEN_LPAREN,
+    TOKEN_RPAREN,
 
-    TOKEN_EOF, // End Of File
-    TOKEN_UNKNOWN
+    TOKEN_EOF, //End of file
+    TOKEN_UNKNOWN // for unknown characters.
 } TokenType;
 
 typedef struct {
@@ -25,4 +30,4 @@ typedef struct {
     char value[64];
 } Token;
 
-#endif // DEBUG
+#endif // !TOKEN_H

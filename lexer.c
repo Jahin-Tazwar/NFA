@@ -6,98 +6,149 @@
 #include "lexer.h"
 
 Lexer init_lexer(char* text) {
-	Lexer lexer;
-	lexer.text = text;
-	lexer.index = 0;
-	lexer.current_char = text[0];
-	return lexer;
+    Lexer lexer;
+    lexer.index = 0;
+    lexer.text = text;
+    lexer.current_char = text[0];
+    return lexer;
 }
 
 void advance(Lexer* lexer) {
-	lexer -> index++; // Simillar to (*lexer).index++ (Gets the index)
+    lexer -> index++;
 
-	if(lexer -> text[lexer -> index] != '\0') {
-		lexer -> current_char = lexer -> text[lexer -> index];
-	}else {
-		lexer -> current_char = '\0';
-	}
+    if(lexer -> text[lexer -> index] != '\0') {
+        lexer -> current_char = lexer -> text[lexer -> index];
+    }else {
+        lexer -> current_char = '\0';
+    }
 }
 
 void skip_whitespaces(Lexer* lexer) {
-	while(lexer -> current_char == ' ') {
-		advance(lexer);
-	}
+    while(lexer -> current_char == ' ') {
+        advance(lexer);
+    }
 }
 
 Token number(Lexer* lexer) {
-	Token token;
-	token.type = TOKEN_NUMBER;
+    Token token;
 
-	int i = 0;
+    token.type = TOKEN_NUMBER;
 
-	while(isdigit(lexer -> current_char)) {
-		token.value[i++] = lexer -> current_char; //token's value becomes the current char and i increments.
-		advance(lexer);
-	}
+    int i = 0;
 
-	token.value[i] = '\0';
+    while(isdigit(lexer -> current_char)) {
+        token.value[i++] = lexer -> current_char;
+        advance(lexer);
+    }
 
-	return token;
+    token.value[i] = '\0';
+
+    return token;
 }
 
 Token identifier(Lexer* lexer) {
-	Token token;
+    Token token;
 
-	int i = 0;
+    int i = 0;
 
-	while(isalnum(lexer -> current_char)){ //Checks if the character is alphanumeric (abc/0123)
-		token.value[i++] = lexer -> current_char;
-		advance(lexer);
-	}
+    while(isalpha(lexer -> current_char)) {
+        token.value[i++] = lexer -> current_char;
+        advance(lexer);
+    } 
+    token.value[i] = '\0';
 
-	token.value[i] = '\0';
+    if(strcmp(token.value, "let") == 0) {
+        token.type = TOKEN_LET;
+    }else {
+        token.type = TOKEN_IDENTIFIER;
+    }
 
-	if(strcmp(token.value, "let") == 0) {
-		token.type = TOKEN_LET;
-	}else {
-		token.type = TOKEN_IDENTIFIER;
-	}
-
-	return token;
+    return token;
 }
 
 Token get_next_token(Lexer* lexer) {
-	while(lexer -> current_char != '\0') {
-		if(lexer -> current_char == ' ') {
-			skip_whitespaces(lexer);
-			continue;
-		}
+    while(lexer -> current_char != '\0') {
+        if(lexer -> current_char == ' ') {
+            skip_whitespaces(lexer);
+            continue;
+        }
 
-		if(isdigit(lexer -> current_char)) {
-			return number(lexer);
-		}
+        if(isdigit(lexer -> current_char)) {
+            return number(lexer);
+        }
 
-		if(isalnum(lexer -> current_char)) {
-			return identifier(lexer);
-		}
+        if(isalpha(lexer -> current_char)) {
+            return identifier(lexer);
+        }
 
-		if(lexer -> current_char == '+') {
-			advance(lexer);
-			Token token = {TOKEN_PLUS, "+"}; // same as token.type and token.value
-			return token;
-		}
+        if(lexer -> current_char == '+') {
+            advance(lexer);
+            Token token;
+            token.type = TOKEN_PLUS;
+            strcpy(token.value, "+");
+            return token;
+        }
 
-		if(lexer -> current_char == '=') {
-			advance(lexer);
-			Token token = {TOKEN_EQUAL, "="};
-			return token;
-		}
+        if(lexer -> current_char == '-') {
+            advance(lexer);
+            Token token;
+            token.type = TOKEN_MINUS;
+            strcpy(token.value, "-");
+            return token;
+        }
 
-		advance(lexer);
-		Token token = {TOKEN_UNKNOWN, "?"};
-		return token;
-	}
+        if(lexer -> current_char == '*') {
+            advance(lexer);
+            Token token;
+            token.type = TOKEN_STAR;
+            strcpy(token.value, "*");
+            return token;
+        }
 
-	Token token = {TOKEN_EOF, "EOF"};
-	return token;
+        if(lexer -> current_char == '/') {
+            advance(lexer);
+            Token token;
+            token.type = TOKEN_SLASH;
+            strcpy(token.value, "/");
+            return token;
+        }
+
+        if(lexer -> current_char == '=') {
+            advance(lexer);
+            Token token;
+            token.type = TOKEN_EQUAL;
+            strcpy(token.value, "=");
+            return token;
+        }
+
+        if(lexer -> current_char == '(') {
+            advance(lexer);
+            Token token;
+            token.type = TOKEN_LPAREN;
+            strcpy(token.value, "(");
+            return token;
+        }
+
+        if(lexer -> current_char == ')') {
+            advance(lexer);
+            Token token;
+            token.type = TOKEN_RPAREN;
+            strcpy(token.value, ")");
+            return token;
+        }
+
+        Token token;
+        token.type = TOKEN_UNKNOWN;
+        token.value[0] = lexer->current_char;
+        token.value[1] = '\0';
+        advance(lexer);
+
+        return token;
+    }
+
+    Token token;
+    token.type = TOKEN_EOF;
+    strcpy(token.value, "EOF");
+
+    return token;
 }
