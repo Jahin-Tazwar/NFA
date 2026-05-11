@@ -5,11 +5,14 @@
 
 typedef enum {
     AST_NUMBER,
-    AST_BINARY_OP
+    AST_BINARY_OP,
+    AST_VARIABLE,
+    AST_ASSIGN
 } ASTNodeType;
 
 typedef struct ASTNode {
     ASTNodeType type;
+    char name[64];
     char op; // '+', '-', '*' ... or 0 for number
     int value; // only for numbers
 
@@ -19,6 +22,7 @@ typedef struct ASTNode {
 
 ASTNode* create_number(int value);
 ASTNode* create_op(char op, ASTNode* left, ASTNode* right);
-ASTNode* parse_simple_expression(Lexer* lexer);
+ASTNode* create_variable(char* name);
+ASTNode* create_assignment(char* name, ASTNode* value);
 
 #endif

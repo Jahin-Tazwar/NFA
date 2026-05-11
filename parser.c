@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "stdlib.h"
+#include "string.h"
 #include "parser.h"
 
 Parser init_parser(Lexer* lexer) {
@@ -20,6 +21,10 @@ ASTNode* parse_factor(Parser* parser) {
     if(parser -> current_token.type == TOKEN_NUMBER) {
         node = create_number(atoi(parser -> current_token.value));
         advance_parser(parser);
+    }else if(parser -> current_token.type == TOKEN_IDENTIFIER) {
+        ASTNode* node = create_variable(parser -> current_token.value);
+        advance_parser(parser);
+        return node;
     }else if(parser -> current_token.type == TOKEN_LPAREN) {
         advance_parser(parser); // skip (
 
@@ -62,4 +67,27 @@ ASTNode* parse_expression(Parser* parser) {
     }
 
     return left;
+}
+
+ASTNode* parse_statement(Parser* parser) {
+   if(parser -> current_token.type == TOKEN_LET) {
+        advance_parser(parser);
+        if (parser->current_token.type != TOKEN_IDENTIFIER) {
+            printf("Expected identifier\n");
+            return NULL;
+        }
+        char variable[64];
+        strcpy(variable, parser -> current_token.value);
+        advance_parser(parser);
+        if (parser->current_token.type != TOKEN_EQUAL) {
+            printf("Expected '='\n");
+            return NULL;
+        }
+
+        advance_parser(parser);
+
+        ASTNode* value = parse_expression(parser);
+        return create_assignment(variable, value);    
+   }
+   return parse_expression(parser);
 }

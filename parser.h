@@ -2,6 +2,7 @@
 #define PARSER_H
 #include "ast.h"
 #include "lexer.h"
+#include "symbol_table.h"
 
 typedef struct Parser {
     Token current_token;
@@ -12,5 +13,6 @@ Parser init_parser(Lexer* lexer);
 ASTNode* parse_factor(Parser* parser);
 ASTNode* parse_term(Parser* parser);
 ASTNode* parse_expression(Parser* parser);
+ASTNode* parse_statement(Parser* parser);
 
 #endif // !PARSER_H
