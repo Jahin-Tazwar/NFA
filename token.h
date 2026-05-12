@@ -15,7 +15,20 @@ typedef enum {
     TOKEN_MINUS,
     TOKEN_SLASH,
     TOKEN_STAR,
-    TOKEN_EQUAL,
+    TOKEN_EQUAL, // for assignment
+    
+    //Compare operators
+    TOKEN_EQ, // ==
+    TOKEN_GT, // >
+    TOKEN_LT, // <
+    TOKEN_NOTEQ, // !=
+    TOKEN_GTE, //>=
+    TOKEN_LTE, //<=
+
+    //Logical operators
+    TOKEN_NOT, //!
+    TOKEN_AND, // &&
+    TOKEN_OR, // ||
 
     // ()
     TOKEN_LPAREN,

@@ -2,7 +2,7 @@
 #define SYMBOL_H
 
 typedef struct {
-    char* name;
+    char name[64];
     int value;
 } Variable;
 

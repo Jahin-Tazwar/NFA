@@ -14,18 +14,25 @@ ASTNode* create_number(int value) {
     return node;
 }
 
-ASTNode* create_op(char op, ASTNode* left, ASTNode* right) {
+ASTNode* create_op(char op[], ASTNode* left, ASTNode* right) {
     ASTNode* node = malloc(sizeof(ASTNode));
-
-    node -> type = AST_BINARY_OP;
-    node -> op = op;
+    
+    if (strcmp(op, "==") == 0 || strcmp(op, "!=") == 0 || strcmp(op, "<") == 0 || strcmp(op, ">") == 0 || strcmp(op, "<=") == 0 || strcmp(op, ">=") == 0) {
+        node -> type = AST_COMPARISON_OP;
+    } else if (strcmp(op, "&&") == 0 || strcmp(op, "||") == 0 || strcmp(op, "!") == 0) {
+        node -> type = AST_LOGICAL_OP;
+    } else {
+        node -> type = AST_BINARY_OP;
+    }
+    
+    strcpy(node -> op, op);
     node -> left = left;
     node -> right = right;
 
     return node;
 }
 
-ASTNode* create_variable(char* name) {
+ASTNode* create_variable(char name[]) {
     ASTNode* node = malloc(sizeof(ASTNode));
 
     node -> type = AST_VARIABLE;
@@ -34,7 +41,7 @@ ASTNode* create_variable(char* name) {
     return node;
 }
 
-ASTNode* create_assignment(char* name, ASTNode* value) {
+ASTNode* create_assignment(char name[], ASTNode* value) {
     ASTNode* node = malloc(sizeof(ASTNode));
 
     node -> type = AST_ASSIGN;

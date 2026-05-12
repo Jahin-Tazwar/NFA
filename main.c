@@ -1,34 +1,45 @@
 #include <stdio.h>
 #include <string.h>
-#include "stdlib.h"
+#include <stdlib.h>
+
 #include "parser.h"
 #include "eval.h"
+#include "symbol_table.h"
+
+#define MAX_INPUT 256
 
 void print_ast(ASTNode* node, int depth) {
     if (!node) return;
 
     for (int i = 0; i < depth; i++) printf(" ");
+
     if (node->type == AST_ASSIGN) {
         printf("=\n");
 
         for (int i = 0; i < depth + 1; i++)
             printf(" ");
 
-        printf("%s\n", node-> name);
+        printf("%s\n", node->name);
 
         print_ast(node->right, depth + 1);
+        return;
     }
 
-    if (node->type == AST_NUMBER) {
+    else if (node->type == AST_NUMBER) {
         printf("%d\n", node->value);
         return;
     }
 
+    else if (node->type == AST_BINARY_OP) {
+        printf("%s\n", node->op);
 
-    if (node->type == AST_BINARY_OP) {
-        printf("%c\n", node->op);
         print_ast(node->left, depth + 1);
         print_ast(node->right, depth + 1);
+        return;
+    }
+
+    else if (node->type == AST_VARIABLE) {
+        printf("%s\n", node->name);
         return;
     }
 
@@ -36,26 +47,47 @@ void print_ast(ASTNode* node, int depth) {
 }
 
 int main() {
-    char input[100];
+    SymbolTable table;
+    table.count = 0;
 
-    fgets(input, sizeof(input), stdin);
+    char input[MAX_INPUT];
 
-    input[strcspn(input, "\n")] = 0;
+    printf("NFA REPL (type 'exit' to quit)\n");
 
-    Lexer lexer = init_lexer(input);
-    Parser parser = init_parser(&lexer);
+    while (1) {
 
-    ASTNode* node = parse_statement(&parser);
+        printf("> ");
+        if (!fgets(input, sizeof(input), stdin)) {
+            break;
+        }
 
-    if (!node) {
-        printf("Parse error\n");
-        return 1;
+        // remove newline
+        input[strcspn(input, "\n")] = 0;
+
+        // exit command
+        if (strcmp(input, "exit") == 0) {
+            break;
+        }
+
+        // skip empty input
+        if (strlen(input) == 0) {
+            continue;
+        }
+
+        Lexer lexer = init_lexer(input);
+        Parser parser = init_parser(&lexer);
+
+        ASTNode* node = parse_statement(&parser);
+
+        if (!node) {
+            printf("Parse error\n");
+            continue;
+        }
+
+        int result = eval(node, &table);
+
+        printf("%d\n", result);
     }
-
-    // int result = eval(node);
-
-    print_ast(node, 0);
-    // printf("%d\n", result);
 
     return 0;
 }

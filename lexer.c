@@ -115,6 +115,13 @@ Token get_next_token(Lexer* lexer) {
 
         if(lexer -> current_char == '=') {
             advance(lexer);
+            if(lexer -> current_char == '='){
+                advance(lexer);
+                Token token;
+                token.type = TOKEN_EQ;
+                strcpy(token.value, "==");
+                return token;
+            }
             Token token;
             token.type = TOKEN_EQUAL;
             strcpy(token.value, "=");
@@ -134,6 +141,85 @@ Token get_next_token(Lexer* lexer) {
             Token token;
             token.type = TOKEN_RPAREN;
             strcpy(token.value, ")");
+            return token;
+        }
+
+        if(lexer -> current_char == '!') {
+            advance(lexer);
+            if(lexer -> current_char == '='){
+                advance(lexer);
+                Token token;
+                token.type = TOKEN_NOTEQ;
+                strcpy(token.value, "!=");
+                return token;
+            }
+            Token token;
+            token.type = TOKEN_NOT;
+            strcpy(token.value, "!");
+            return token;
+        }
+
+        if(lexer -> current_char == '&') {
+            advance(lexer);
+            if(lexer -> current_char == '&'){
+                advance(lexer);
+                Token token;
+                token.type = TOKEN_AND;
+                strcpy(token.value, "&&");
+                return token;
+            }
+            
+            Token token;
+            token.type = TOKEN_UNKNOWN;
+            token.value[0] = lexer->current_char;
+            token.value[1] = '\0';
+            return token;
+        }
+
+        if(lexer -> current_char == '|') {
+            advance(lexer);
+            if(lexer -> current_char == '|'){
+                advance(lexer);
+                Token token;
+                token.type = TOKEN_OR;
+                strcpy(token.value, "||");
+                return token;
+            }
+
+            Token token;
+            token.type = TOKEN_UNKNOWN;
+            token.value[0] = lexer->current_char;
+            token.value[1] = '\0';
+            return token;
+        }
+
+        if(lexer -> current_char == '>') {
+            advance(lexer);
+            if(lexer -> current_char == '='){
+                advance(lexer);
+                Token token;
+                token.type = TOKEN_GTE;
+                strcpy(token.value, ">=");
+                return token;
+            }
+            Token token;
+            token.type = TOKEN_GT;
+            strcpy(token.value, ">");
+            return token;
+        }
+
+        if(lexer -> current_char == '<') {
+            advance(lexer);
+            if(lexer -> current_char == '='){
+                advance(lexer);
+                Token token;
+                token.type = TOKEN_LTE;
+                strcpy(token.value, "<=");
+                return token;
+            }
+            Token token;
+            token.type = TOKEN_LT;
+            strcpy(token.value, "<");
             return token;
         }
 

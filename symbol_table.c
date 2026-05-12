@@ -2,7 +2,7 @@
 #include "string.h"
 #include "symbol_table.h"
 
-void set_variable(SymbolTable* table, char* name, int value) {
+void set_variable(SymbolTable* table, char name[], int value) {
     Variable var;
 
     strcpy(var.name, name);
@@ -12,7 +12,7 @@ void set_variable(SymbolTable* table, char* name, int value) {
     table->count++;
 }
 
-int get_variable(SymbolTable* table, char* name) {
+int get_variable(SymbolTable* table, char name[]) {
     for (int i = 0; i < table->count; i++) {
         if (strcmp(table->vars[i].name, name) == 0) {
             return table->vars[i].value;

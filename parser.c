@@ -25,10 +25,16 @@ ASTNode* parse_factor(Parser* parser) {
         ASTNode* node = create_variable(parser -> current_token.value);
         advance_parser(parser);
         return node;
+    }else if(parser -> current_token.type == TOKEN_NOT){
+        char op[8] = "!";
+        advance_parser(parser);
+        ASTNode* right = parse_factor(parser);
+
+        return create_op(op, NULL, right);
     }else if(parser -> current_token.type == TOKEN_LPAREN) {
         advance_parser(parser); // skip (
 
-        node = parse_expression(parser); //build tree for the whole expression in ()
+        node = parse_logical(parser); //build tree for the whole expression in ()
 
         if (parser->current_token.type != TOKEN_RPAREN) {
             printf("Error: missing ')'\n");
@@ -47,7 +53,8 @@ ASTNode* parse_term(Parser* parser) {
     ASTNode* left = parse_factor(parser);
 
     while(parser -> current_token.type == TOKEN_STAR || parser -> current_token.type == TOKEN_SLASH) {   
-        char op = parser -> current_token.value[0];
+        char op[8];
+        strcpy(op, parser -> current_token.value);
         advance_parser(parser);
         ASTNode* right = parse_factor(parser);
         left = create_op(op, left, right);
@@ -60,7 +67,8 @@ ASTNode* parse_expression(Parser* parser) {
     ASTNode* left = parse_term(parser);
 
     while(parser -> current_token.type == TOKEN_PLUS || parser -> current_token.type == TOKEN_MINUS) {
-        char op = parser -> current_token.value[0];
+        char op[8];
+        strcpy(op, parser -> current_token.value);
         advance_parser(parser);
         ASTNode* right = parse_term(parser);
         left = create_op(op, left, right);
@@ -86,8 +94,36 @@ ASTNode* parse_statement(Parser* parser) {
 
         advance_parser(parser);
 
-        ASTNode* value = parse_expression(parser);
+        ASTNode* value = parse_logical(parser);
         return create_assignment(variable, value);    
    }
-   return parse_expression(parser);
+   return parse_logical(parser);
+}
+
+ASTNode* parse_comparison(Parser* parser) {
+    ASTNode* left = parse_expression(parser);
+
+    while(parser -> current_token.type == TOKEN_EQ || parser -> current_token.type == TOKEN_NOTEQ || parser -> current_token.type == TOKEN_GT || parser -> current_token.type == TOKEN_LT || parser -> current_token.type == TOKEN_GTE || parser -> current_token.type == TOKEN_LTE) {
+        char op[8];
+        strcpy(op, parser -> current_token.value);
+        advance_parser(parser);
+        ASTNode* right = parse_expression(parser);
+        left = create_op(op, left, right);
+    }
+
+    return left;
+}
+
+ASTNode* parse_logical(Parser* parser) {
+    ASTNode* left = parse_comparison(parser);
+    
+    while(parser -> current_token.type == TOKEN_AND || parser -> current_token.type == TOKEN_OR) {
+        char op[8];
+        strcpy(op, parser -> current_token.value);
+        advance_parser(parser);
+        ASTNode* right = parse_comparison(parser);
+        left = create_op(op, left, right);
+    }
+
+    return left;
 }
