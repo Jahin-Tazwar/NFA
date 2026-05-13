@@ -77,3 +77,19 @@ ASTNode* create_block(ASTNode* block[], int count) {
 
     return node;
 }
+
+ASTNode* create_function(char name[], char params[][64], int param_count, ASTNode* body){
+    ASTNode* node = malloc(sizeof(ASTNode));
+
+    node -> type = AST_FN;
+    strcpy(node -> name, name);
+    node -> param_count = param_count;
+
+    for(int i = 0; i < param_count; i++) {
+        strcpy(node -> params[i], params[i]);
+    }
+
+    node -> right = body;
+
+    return node;
+}

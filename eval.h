@@ -3,6 +3,6 @@
 #include "ast.h"
 #include "symbol_table.h"
 
-int eval(ASTNode* node, SymbolTable* table);
+Value eval(ASTNode* node, SymbolTable* table);
 
 #endif // !EVAL_H

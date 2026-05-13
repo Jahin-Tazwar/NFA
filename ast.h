@@ -25,7 +25,8 @@ typedef struct ASTNode {
     char op[8]; // For binary operators and comparison operators
     int value; // only for numbers
 
-    char params[64][64];
+    char params[16][64]; // Function parameters
+    int param_count;
 
     struct ASTNode* left;
     struct ASTNode* right;
@@ -41,4 +42,5 @@ ASTNode* create_variable(char name[]);
 ASTNode* create_assignment(char name[], ASTNode* value);
 ASTNode* create_if(ASTNode* condition, ASTNode* true_branch, ASTNode* false_branch);
 ASTNode* create_block(ASTNode* block[], int count);
+ASTNode* create_function(char name[], char params[][64], int param_count, ASTNode* body);
 #endif

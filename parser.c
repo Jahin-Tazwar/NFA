@@ -15,7 +15,6 @@ void advance_parser(Parser* parser) {
     parser -> current_token = get_next_token(parser -> lexer);
 }
 
-// (5+2) * 3
 ASTNode* parse_factor(Parser* parser) {
     ASTNode* node = NULL;
     if(parser -> current_token.type == TOKEN_NUMBER) {
@@ -80,7 +79,11 @@ ASTNode* parse_expression(Parser* parser) {
 }
 
 ASTNode* parse_statement(Parser* parser) {
-   if(parser -> current_token.type == TOKEN_LET) {
+    if(parser -> current_token.type == TOKEN_FN){
+        return parse_function(parser);
+    }
+
+    if(parser -> current_token.type == TOKEN_LET) {
         advance_parser(parser);
         if (parser->current_token.type != TOKEN_IDENTIFIER) {
             printf("Expected identifier\n");
@@ -169,4 +172,32 @@ ASTNode* parse_block(Parser* parser) {
     }
 
     return parse_if(parser);
+}
+
+ASTNode* parse_function(Parser* parser) {
+    advance_parser(parser); // Skip 'fn'
+
+    char name[64];
+    strcpy(name, parser->current_token.value);
+    advance_parser(parser);
+
+    advance_parser(parser); // Skip '('
+    char params[16][64];
+    int param_count = 0;
+
+    while (parser->current_token.type != TOKEN_RPAREN) {
+        if (parser->current_token.type == TOKEN_IDENTIFIER) {
+            strcpy(params[param_count++], parser->current_token.value);
+            advance_parser(parser);
+        }
+        
+        if (parser->current_token.type == TOKEN_COMMA) {
+            advance_parser(parser);
+        }
+    }
+    advance_parser(parser); // Skip ')'
+
+    ASTNode* body = parse_block(parser);
+
+    return create_function(name, params, param_count, body);
 }

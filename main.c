@@ -84,9 +84,14 @@ int main() {
             continue;
         }
 
-        int result = eval(node, &table);
+        Value result = eval(node, &table);
 
-        printf("%d\n", result);
+        if (result.is_function) {
+            printf("<function: %s>\n", node->name);
+        } else {
+            printf("%d\n", result.number);
+        }
+
     }
 
     return 0;

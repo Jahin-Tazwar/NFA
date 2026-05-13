@@ -2,17 +2,25 @@
 #include "stdlib.h"
 #include "string.h"
 
-#include "symbol_table.h"
 #include "eval.h"
 
-int eval(ASTNode* node, SymbolTable* table) {
+//helper function
+Value number_to_value(int n) {
+    Value value;
+    value.is_function = 0;
+    value.number = n;
+    value.node = NULL;
+    return value;
+}
+
+Value eval(ASTNode* node, SymbolTable* table) {
     if (!node) {
         printf("Error: NULL node in eval\n");
-        return 0;
+        return number_to_value(0);
     }
 
     if (node->type == AST_NUMBER) {
-        return node->value;
+        return number_to_value(node->value);
     }
 
     if(node -> type == AST_VARIABLE) {
@@ -20,91 +28,101 @@ int eval(ASTNode* node, SymbolTable* table) {
     }
 
     if(node -> type == AST_ASSIGN) {
-        int value = eval(node -> right, table);
+        Value value = eval(node -> right, table);
 
         set_variable(table, node -> name, value);
 
         return value;
     }
 
+    if(node -> type == AST_FN) {
+        Value value;
+
+        value.is_function = 1;
+        value.node = node;
+        set_variable(table, node -> name, value);
+
+        return value;
+    }
+
     if(node -> type == AST_IF) {
-        int condition = eval(node -> left, table);
+        Value condition = eval(node -> left, table);
         
-        if(condition) return eval(node -> right, table);
+        if(condition.number) return eval(node -> right, table);
         else {
             if(node -> third != NULL) return eval(node -> third, table);
-            else return 0;
+            else return number_to_value(0);
         }
     }
 
     if(node -> type == AST_COMPARISON_OP) {
-        int left_val = eval(node -> left, table);
-        int right_val = eval(node -> right, table);
+        Value left_val = eval(node -> left, table);
+        Value right_val = eval(node -> right, table);
 
         if(strcmp(node -> op, "==") == 0) {
-            return left_val == right_val ? 1 : 0;
+            return number_to_value(left_val.number == right_val.number ? 1 : 0);
         }else if(strcmp(node -> op, "!=") == 0) {
-            return left_val != right_val ? 1 : 0;
+            return number_to_value(left_val.number != right_val.number ? 1 : 0);
         }else if(strcmp(node -> op, "<") == 0) {
-            return left_val < right_val ? 1 : 0;
+            return number_to_value(left_val.number < right_val.number ? 1 : 0);
         }else if(strcmp(node -> op, ">") == 0) {
-            return left_val > right_val ? 1 : 0;
+            return number_to_value(left_val.number > right_val.number ? 1 : 0);
         }else if(strcmp(node -> op, "<=") == 0) {
-            return left_val <= right_val ? 1 : 0;
+            return number_to_value(left_val.number <= right_val.number ? 1 : 0);
         }else if(strcmp(node -> op, ">=") == 0) {
-            return left_val >= right_val ? 1 : 0;
+            return number_to_value(left_val.number >= right_val.number ? 1 : 0);
         }
 
         printf("Error: unknown operator %s\n", node->op);
-        return 0;
+        return number_to_value(0);
     }
 
     if(node -> type == AST_LOGICAL_OP) {
         if(strcmp(node -> op, "!") == 0) {
-            int right_val = eval(node -> right, table);
-            return right_val ? 0 : 1;
+            Value right_val = eval(node -> right, table);
+            return number_to_value(right_val.number ? 0 : 1);
         }
 
-        int left_val = eval(node -> left, table);
-        int right_val = eval(node -> right, table);
+        Value left_val = eval(node -> left, table);
+        Value right_val = eval(node -> right, table);
 
         if(strcmp(node -> op, "&&") == 0) {
-            return left_val && right_val ? 1 : 0;
+            return number_to_value(left_val.number && right_val.number ? 1 : 0);
         }else if(strcmp(node -> op, "||") == 0) {
-            return left_val || right_val ? 1 : 0;
+            return number_to_value(left_val.number || right_val.number ? 1 : 0);
         }
 
         printf("Error: unknown operator %s\n", node->op);
-        return 0;
+        return number_to_value(0);
     }
 
     if (node->type == AST_BINARY_OP) {
-        int left_val = eval(node->left, table);
-        int right_val = eval(node->right, table);
+        Value left_val = eval(node->left, table);
+        Value right_val = eval(node->right, table);
 
         if (strcmp(node -> op, "+") == 0) {
-            return left_val + right_val;
+            return number_to_value(left_val.number + right_val.number);
         } 
         else if (strcmp(node -> op, "-") == 0) {
-            return left_val - right_val;
+            return number_to_value(left_val.number - right_val.number);
         } 
         else if (strcmp(node -> op, "*") == 0) {
-            return left_val * right_val;
+            return number_to_value(left_val.number * right_val.number);
         } 
         else if (strcmp(node -> op, "/") == 0) {
-            if (right_val == 0) {
+            if (right_val.number == 0) {
                 printf("Error: division by zero\n");
-                return 0;
+                return number_to_value(0);
             }
-            return left_val / right_val;
+            return number_to_value(left_val.number / right_val.number);
         }
 
         printf("Error: unknown operator %s\n", node->op);
-        return 0;
+        return number_to_value(0);
     }
 
     if(node -> type == AST_BLOCK) {
-        int result = 0;
+        Value result;
 
         for(int i = 0; i < node -> count; i++) {
             result = eval(node -> block[i], table);
@@ -114,5 +132,5 @@ int eval(ASTNode* node, SymbolTable* table) {
     }
 
     printf("Error: unknown node type\n");
-    return 0;
+    return number_to_value(0);
 }
