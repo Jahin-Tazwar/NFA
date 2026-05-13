@@ -27,6 +27,16 @@ int eval(ASTNode* node, SymbolTable* table) {
         return value;
     }
 
+    if(node -> type == AST_IF) {
+        int condition = eval(node -> left, table);
+        
+        if(condition) return eval(node -> right, table);
+        else {
+            if(node -> third != NULL) return eval(node -> third, table);
+            else return 0;
+        }
+    }
+
     if(node -> type == AST_COMPARISON_OP) {
         int left_val = eval(node -> left, table);
         int right_val = eval(node -> right, table);
@@ -91,6 +101,16 @@ int eval(ASTNode* node, SymbolTable* table) {
 
         printf("Error: unknown operator %s\n", node->op);
         return 0;
+    }
+
+    if(node -> type == AST_BLOCK) {
+        int result = 0;
+
+        for(int i = 0; i < node -> count; i++) {
+            result = eval(node -> block[i], table);
+        }
+
+        return result;
     }
 
     printf("Error: unknown node type\n");

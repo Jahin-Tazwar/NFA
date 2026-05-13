@@ -3,12 +3,17 @@
 
 typedef enum {
     TOKEN_NUMBER,
-    TOKEN_LET,         
+    TOKEN_LET,  
+    TOKEN_IF,
+    TOKEN_ELSE,
+    TOKEN_FN,     
     TOKEN_IDENTIFIER, /*|---Variable names
                     ├── Function names
                     ├── Class names
                     ├── Object names
                     └── etc.*/
+
+    TOKEN_COMMA,
 
     //Math operators
     TOKEN_PLUS,
@@ -33,6 +38,10 @@ typedef enum {
     // ()
     TOKEN_LPAREN,
     TOKEN_RPAREN,
+
+    //{}
+    TOKEN_LCURLY,
+    TOKEN_RCURLY,
 
     TOKEN_EOF, //End of file
     TOKEN_UNKNOWN // for unknown characters.

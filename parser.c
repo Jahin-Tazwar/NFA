@@ -34,7 +34,7 @@ ASTNode* parse_factor(Parser* parser) {
     }else if(parser -> current_token.type == TOKEN_LPAREN) {
         advance_parser(parser); // skip (
 
-        node = parse_logical(parser); //build tree for the whole expression in ()
+        node = parse_if(parser); //build tree for the whole expression in ()
 
         if (parser->current_token.type != TOKEN_RPAREN) {
             printf("Error: missing ')'\n");
@@ -42,6 +42,8 @@ ASTNode* parse_factor(Parser* parser) {
         }
 
         advance_parser(parser); //skip )
+    }else if(parser -> current_token.type == TOKEN_LCURLY){
+        return parse_block(parser);
     }else {
         printf("Error: unexpected token\n");
         return NULL;
@@ -94,10 +96,10 @@ ASTNode* parse_statement(Parser* parser) {
 
         advance_parser(parser);
 
-        ASTNode* value = parse_logical(parser);
+        ASTNode* value = parse_if(parser);
         return create_assignment(variable, value);    
    }
-   return parse_logical(parser);
+   return parse_if(parser);
 }
 
 ASTNode* parse_comparison(Parser* parser) {
@@ -126,4 +128,45 @@ ASTNode* parse_logical(Parser* parser) {
     }
 
     return left;
+}
+
+
+ASTNode* parse_if(Parser* parser) {
+    if(parser -> current_token.type == TOKEN_IF) {
+        advance_parser(parser);
+
+        ASTNode* condition = parse_logical(parser);
+        ASTNode* true_branch = parse_logical(parser);
+        ASTNode* false_branch = NULL;
+
+        if(parser -> current_token.type == TOKEN_ELSE) {
+            advance_parser(parser);
+            false_branch = parse_logical(parser);
+        }
+
+        return create_if(condition, true_branch, false_branch);
+    }
+
+    return parse_logical(parser);
+}
+
+ASTNode* parse_block(Parser* parser) {
+    if(parser -> current_token.type == TOKEN_LCURLY) {
+        advance_parser(parser);
+        ASTNode* nodes[64];
+
+        int count = 0;
+        while(parser -> current_token.type != TOKEN_RCURLY && parser -> current_token.type != TOKEN_EOF) {
+            ASTNode* node = parse_statement(parser);
+            nodes[count] = node;
+            count++;
+        }
+
+        if(parser -> current_token.type == TOKEN_RCURLY) {
+            advance_parser(parser);
+            return create_block(nodes, count);
+        }
+    }
+
+    return parse_if(parser);
 }

@@ -59,6 +59,12 @@ Token identifier(Lexer* lexer) {
 
     if(strcmp(token.value, "let") == 0) {
         token.type = TOKEN_LET;
+    }else if(strcmp(token.value, "if") == 0){
+        token.type = TOKEN_IF;
+    }else if(strcmp(token.value, "else") == 0){
+        token.type = TOKEN_ELSE;
+    }else if(strcmp(token.value, "fn") == 0){
+        token.type = TOKEN_FN;
     }else {
         token.type = TOKEN_IDENTIFIER;
     }
@@ -144,6 +150,22 @@ Token get_next_token(Lexer* lexer) {
             return token;
         }
 
+        if(lexer -> current_char == '{') {
+            advance(lexer);
+            Token token;
+            token.type = TOKEN_LCURLY;
+            strcpy(token.value, "{");
+            return token;
+        }
+
+        if(lexer -> current_char == '}') {
+            advance(lexer);
+            Token token;
+            token.type = TOKEN_RCURLY;
+            strcpy(token.value, "}");
+            return token;
+        }
+
         if(lexer -> current_char == '!') {
             advance(lexer);
             if(lexer -> current_char == '='){
@@ -220,6 +242,14 @@ Token get_next_token(Lexer* lexer) {
             Token token;
             token.type = TOKEN_LT;
             strcpy(token.value, "<");
+            return token;
+        }
+
+        if(lexer -> current_char == ',') {
+            advance(lexer);
+            Token token;
+            token.type = TOKEN_COMMA;
+            strcpy(token.value, ",");
             return token;
         }
 

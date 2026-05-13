@@ -32,6 +32,18 @@ ASTNode* create_op(char op[], ASTNode* left, ASTNode* right) {
     return node;
 }
 
+ASTNode* create_if(ASTNode* condition, ASTNode* true_branch, ASTNode* false_branch) {
+    ASTNode* node = malloc(sizeof(ASTNode));
+
+    node -> type = AST_IF;
+    strcpy(node -> op, "if");
+    node -> left = condition;
+    node -> right = true_branch;
+    node -> third = false_branch;
+
+    return node;
+}
+
 ASTNode* create_variable(char name[]) {
     ASTNode* node = malloc(sizeof(ASTNode));
 
@@ -49,6 +61,19 @@ ASTNode* create_assignment(char name[], ASTNode* value) {
 
     node -> right = value;
     node -> left = NULL;
+
+    return node;
+}
+
+ASTNode* create_block(ASTNode* block[], int count) {
+    ASTNode* node = malloc(sizeof(ASTNode));
+
+    node -> type = AST_BLOCK;
+    node -> count = count;
+    
+    for(int i = 0; i < count; i++) {
+        node -> block[i] = block[i];
+    }
 
     return node;
 }
