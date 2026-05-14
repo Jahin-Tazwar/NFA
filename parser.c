@@ -21,8 +21,29 @@ ASTNode* parse_factor(Parser* parser) {
         node = create_number(atoi(parser -> current_token.value));
         advance_parser(parser);
     }else if(parser -> current_token.type == TOKEN_IDENTIFIER) {
-        ASTNode* node = create_variable(parser -> current_token.value);
+        char value[64];
+        strcpy(value, parser -> current_token.value);
         advance_parser(parser);
+
+        // For func calls
+        if(parser -> current_token.type == TOKEN_LPAREN) {
+            advance_parser(parser); // skip (
+            ASTNode* args[16];
+            int arg_count = 0;
+
+            while(parser -> current_token.type != TOKEN_RPAREN) {
+                args[arg_count++] = parse_if(parser);
+
+                if(parser -> current_token.type == TOKEN_COMMA) {
+                    advance_parser(parser);
+                }
+            }
+            advance_parser(parser); // skip )
+            
+            return create_call(value, args, arg_count);
+        }
+
+        ASTNode* node = create_variable(value);
         return node;
     }else if(parser -> current_token.type == TOKEN_NOT){
         char op[8] = "!";

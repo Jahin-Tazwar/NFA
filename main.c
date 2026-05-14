@@ -92,6 +92,7 @@ int main() {
             printf("%d\n", result.number);
         }
 
+
     }
 
     return 0;

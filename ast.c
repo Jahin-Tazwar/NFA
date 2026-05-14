@@ -93,3 +93,17 @@ ASTNode* create_function(char name[], char params[][64], int param_count, ASTNod
 
     return node;
 }
+
+ASTNode* create_call(char name[], ASTNode* args[], int arg_count) {
+    ASTNode* node = malloc(sizeof(ASTNode));
+
+    node -> type = AST_CALL;
+    strcpy(node -> name, name);
+    node -> arg_count = arg_count;
+
+    for(int i = 0; i < arg_count; i++) {
+        node -> args[i] = args[i];
+    }
+
+    return node;
+}

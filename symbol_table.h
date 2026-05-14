@@ -16,9 +16,10 @@ typedef struct {
 
 #define MAX_VARS 100
 
-typedef struct {
+typedef struct SymbolTable {
     Variable vars[MAX_VARS];
     int count;
+    struct SymbolTable* parent;
 } SymbolTable;
 
 

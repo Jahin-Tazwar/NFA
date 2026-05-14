@@ -11,6 +11,7 @@ typedef enum {
     AST_IF,
 
     AST_FN,
+    AST_CALL,
     
     AST_BINARY_OP, // + - * /
     AST_COMPARISON_OP, // == != < > <= >=
@@ -28,6 +29,9 @@ typedef struct ASTNode {
     char params[16][64]; // Function parameters
     int param_count;
 
+    struct ASTNode* args[16]; // Up to 16 arguments
+    int arg_count;
+
     struct ASTNode* left;
     struct ASTNode* right;
     struct ASTNode* third; // used for false branch
@@ -43,4 +47,6 @@ ASTNode* create_assignment(char name[], ASTNode* value);
 ASTNode* create_if(ASTNode* condition, ASTNode* true_branch, ASTNode* false_branch);
 ASTNode* create_block(ASTNode* block[], int count);
 ASTNode* create_function(char name[], char params[][64], int param_count, ASTNode* body);
+ASTNode* create_call(char name[], ASTNode* args[], int arg_count);
+
 #endif
