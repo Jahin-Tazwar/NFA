@@ -44,16 +44,15 @@ Value eval(ASTNode* node, SymbolTable* table) {
 
         return value;
     }
-
     if(node -> type == AST_CALL) {
         Value func = get_variable(table, node -> name);
 
-        //Creates local scope
-        SymbolTable local_table;
-        local_table.count = 0;
-        local_table.parent = table;
-
         if(func.is_function) {
+            // malloc for moving the table to the Heap (avoiding WASM stack overflow)
+            SymbolTable* local_table = malloc(sizeof(SymbolTable));
+            local_table->count = 0;
+            local_table->parent = table;
+
             ASTNode* func_node = func.node;
             
             Value arg_values[16];
@@ -62,11 +61,14 @@ Value eval(ASTNode* node, SymbolTable* table) {
             }
 
             for(int i = 0; i < func_node -> param_count; i++) {
-                set_variable(&local_table, func_node -> params[i], arg_values[i]);
+                set_variable(local_table, func_node -> params[i], arg_values[i]);
             }
 
-            return eval(func_node -> right, &local_table);
-        }else {
+            Value res = eval(func_node -> right, local_table);
+            
+            free(local_table); // Clean up the memory!
+            return res;
+        } else {
             printf("Error: %s is not a function\n", node->name);
             return number_to_value(0);
         }

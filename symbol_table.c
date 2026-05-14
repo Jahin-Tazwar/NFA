@@ -3,6 +3,20 @@
 #include "symbol_table.h"
 
 void set_variable(SymbolTable* table, char name[], Value value) {
+    // First, check if it already exists and update it!
+    for (int i = 0; i < table->count; i++) {
+        if (strcmp(table->vars[i].name, name) == 0) {
+            table->vars[i].value = value;
+            return;
+        }
+    }
+
+    // Only if it's new, add it to the end
+    if (table->count >= MAX_VARS) {
+        printf("Error: Symbol Table Full!\n");
+        return;
+    }
+
     Variable var;
 
     strcpy(var.name, name);
