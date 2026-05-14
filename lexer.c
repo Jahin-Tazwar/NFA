@@ -24,7 +24,7 @@ void advance(Lexer* lexer) {
 }
 
 void skip_whitespaces(Lexer* lexer) {
-    while(lexer -> current_char == ' ') {
+    while(isspace(lexer -> current_char)) {
         advance(lexer);
     }
 }
@@ -74,7 +74,7 @@ Token identifier(Lexer* lexer) {
 
 Token get_next_token(Lexer* lexer) {
     while(lexer -> current_char != '\0') {
-        if(lexer -> current_char == ' ') {
+        if(isspace(lexer -> current_char)) {
             skip_whitespaces(lexer);
             continue;
         }
