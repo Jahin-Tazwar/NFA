@@ -113,11 +113,22 @@ Token get_next_token(Lexer* lexer) {
 
         if(lexer -> current_char == '/') {
             advance(lexer);
+            
+            // Check if it's a comment!
+            if(lexer -> current_char == '/') {
+                while(lexer -> current_char != '\n' && lexer -> current_char != '\0') {
+                    advance(lexer);
+                }
+                continue;
+            }
+
+            // If it's just a single /, return the division token
             Token token;
             token.type = TOKEN_SLASH;
             strcpy(token.value, "/");
             return token;
         }
+
 
         if(lexer -> current_char == '=') {
             advance(lexer);
