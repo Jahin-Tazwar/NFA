@@ -19,5 +19,6 @@ ASTNode* parse_logical(Parser* parser);
 ASTNode* parse_if(Parser* parser);
 ASTNode* parse_block(Parser* parser);
 ASTNode* parse_function(Parser* parser);
+ASTNode* parse_while(Parser* parser);
 
 #endif // !PARSER_H

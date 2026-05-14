@@ -25,6 +25,14 @@ ASTNode* parse_factor(Parser* parser) {
         strcpy(value, parser -> current_token.value);
         advance_parser(parser);
 
+        // For updating vars
+        if(parser -> current_token.type == TOKEN_EQUAL) {
+            advance_parser(parser);
+            ASTNode* right = parse_if(parser);
+            
+            return create_update(value, right);
+        }
+
         // For func calls
         if(parser -> current_token.type == TOKEN_LPAREN) {
             advance_parser(parser); // skip (
@@ -64,6 +72,8 @@ ASTNode* parse_factor(Parser* parser) {
         advance_parser(parser); //skip )
     }else if(parser -> current_token.type == TOKEN_LCURLY){
         return parse_block(parser);
+    }else if(parser -> current_token.type == TOKEN_WHILE) {
+        return parse_while(parser);
     }else {
         printf("Error: unexpected token\n");
         advance_parser(parser);
@@ -222,4 +232,20 @@ ASTNode* parse_function(Parser* parser) {
     ASTNode* body = parse_block(parser);
 
     return create_function(name, params, param_count, body);
+}
+
+ASTNode* parse_while(Parser* parser) {
+    if(parser -> current_token.type == TOKEN_WHILE) {
+        advance_parser(parser); // skip while
+        advance_parser(parser); // skip (
+    
+        ASTNode* condition = parse_if(parser); // parses the whole condition
+        
+        advance_parser(parser); // skip )
+        
+        ASTNode* body = parse_block(parser); // parses the whole block
+    
+        return create_while(condition, body);
+    }
+    return parse_if(parser);
 }

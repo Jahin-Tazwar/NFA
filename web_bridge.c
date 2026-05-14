@@ -25,6 +25,8 @@ const char* run_nfa(const char* input) {
     table.count = 0;
     table.parent = NULL;
 
+    setup_builtins(&table);
+
     Lexer lexer = init_lexer((char*)input);
     Parser parser = init_parser(&lexer);
 
@@ -47,11 +49,14 @@ const char* run_nfa(const char* input) {
         return "";
     }
 
-    if (last_result.is_function) {
-        snprintf(result_buffer, sizeof(result_buffer), "<function>");
-    } else {
-        snprintf(result_buffer, sizeof(result_buffer), "%d", last_result.number);
+    if (!last_result.is_void) {
+        if (last_result.is_function) {
+            printf("<function>\n");
+        } else {
+            printf("%d\n", last_result.number);
+        }
     }
+
 
     return result_buffer;
 }

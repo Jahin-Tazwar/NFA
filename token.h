@@ -35,6 +35,8 @@ typedef enum {
     TOKEN_AND, // &&
     TOKEN_OR, // ||
 
+    TOKEN_WHILE,
+
     // ()
     TOKEN_LPAREN,
     TOKEN_RPAREN,

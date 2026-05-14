@@ -65,6 +65,8 @@ Token identifier(Lexer* lexer) {
         token.type = TOKEN_ELSE;
     }else if(strcmp(token.value, "fn") == 0){
         token.type = TOKEN_FN;
+    }else if(strcmp(token.value, "while") == 0){
+        token.type = TOKEN_WHILE;
     }else {
         token.type = TOKEN_IDENTIFIER;
     }

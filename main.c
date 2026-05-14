@@ -50,6 +50,8 @@ int main() {
     SymbolTable table;
     table.count = 0;
 
+    setup_builtins(&table);
+
     char input[MAX_INPUT];
 
     printf("NFA REPL (type 'exit' to quit)\n");
@@ -86,13 +88,13 @@ int main() {
 
         Value result = eval(node, &table);
 
-        if (result.is_function) {
-            printf("<function: %s>\n", node->name);
-        } else {
-            printf("%d\n", result.number);
+        if (!result.is_void) {
+            if (result.is_function) {
+                printf("<function>\n");
+            } else {
+                printf("%d\n", result.number);
+            }
         }
-
-
     }
 
     return 0;

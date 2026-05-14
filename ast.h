@@ -7,11 +7,15 @@ typedef enum {
     AST_NUMBER,
     AST_VARIABLE,
     AST_ASSIGN,
+    AST_UPDATE, //update vars
 
     AST_IF,
 
+    //Function
     AST_FN,
     AST_CALL,
+
+    AST_WHILE,
     
     AST_BINARY_OP, // + - * /
     AST_COMPARISON_OP, // == != < > <= >=
@@ -48,5 +52,7 @@ ASTNode* create_if(ASTNode* condition, ASTNode* true_branch, ASTNode* false_bran
 ASTNode* create_block(ASTNode* block[], int count);
 ASTNode* create_function(char name[], char params[][64], int param_count, ASTNode* body);
 ASTNode* create_call(char name[], ASTNode* args[], int arg_count);
+ASTNode* create_while(ASTNode* condition, ASTNode* body);
+ASTNode* create_update(char name[], ASTNode* value);
 
 #endif

@@ -5,12 +5,39 @@
 #include "eval.h"
 
 //helper function
+Value void_value() {
+    Value v;
+    v.is_void = 1;
+    v.is_function = 0;
+    v.is_builtin = 0;
+    v.number = 0;
+    return v;
+}
+
 Value number_to_value(int n) {
     Value value;
     value.is_function = 0;
     value.number = n;
     value.node = NULL;
     return value;
+}
+
+Value builtin_print(Value args[], int arg_count) {
+    for(int i = 0; i < arg_count; i++) {
+        printf("%d ", args[i].number);
+    }
+
+    printf("\n");
+    return void_value();
+}
+
+void setup_builtins(SymbolTable* table) {
+    Value print_val;
+    print_val.is_function = 0;
+    print_val.is_builtin = 1;
+    print_val.builtin = builtin_print;
+
+    set_variable(table, "print", print_val);
 }
 
 Value eval(ASTNode* node, SymbolTable* table) {
@@ -32,7 +59,29 @@ Value eval(ASTNode* node, SymbolTable* table) {
 
         set_variable(table, node -> name, value);
 
-        return value;
+        return void_value();
+    }
+
+    if(node -> type == AST_UPDATE) {
+        Value value = eval(node -> right, table);
+        
+        update_variable(table, node -> name, value);
+
+        return void_value();
+    }
+
+    if(node -> type == AST_WHILE) {
+        SymbolTable* local_table = malloc(sizeof(SymbolTable));
+        local_table -> parent = table;
+        
+        while(eval(node -> left, table).number != 0) {
+            local_table -> count = 0; // wipes while blocks data after every iteration
+            eval(node -> right, local_table);
+        }
+
+        //clean up the ram when the loop is done
+        free(local_table);
+        return void_value();
     }
 
     if(node -> type == AST_FN) {
@@ -42,10 +91,15 @@ Value eval(ASTNode* node, SymbolTable* table) {
         value.node = node;
         set_variable(table, node -> name, value);
 
-        return value;
+        return void_value();
     }
     if(node -> type == AST_CALL) {
         Value func = get_variable(table, node -> name);
+
+        Value arg_values[16];
+        for(int i = 0; i < node -> arg_count; i++) {
+            arg_values[i] = eval(node -> args[i], table);
+        }
 
         if(func.is_function) {
             // malloc for moving the table to the Heap (avoiding WASM stack overflow)
@@ -54,11 +108,6 @@ Value eval(ASTNode* node, SymbolTable* table) {
             local_table->parent = table;
 
             ASTNode* func_node = func.node;
-            
-            Value arg_values[16];
-            for(int i = 0; i < node -> arg_count; i++) {
-                arg_values[i] = eval(node -> args[i], table);
-            }
 
             for(int i = 0; i < func_node -> param_count; i++) {
                 set_variable(local_table, func_node -> params[i], arg_values[i]);
@@ -68,6 +117,8 @@ Value eval(ASTNode* node, SymbolTable* table) {
             
             free(local_table); // Clean up the memory!
             return res;
+        }else if(func.is_builtin){
+            return func.builtin(arg_values, node -> arg_count);
         } else {
             printf("Error: %s is not a function\n", node->name);
             return number_to_value(0);

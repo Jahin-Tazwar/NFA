@@ -1,4 +1,5 @@
 #include "stdio.h"
+#include "stdlib.h"
 #include "string.h"
 #include "symbol_table.h"
 
@@ -49,6 +50,31 @@ Value get_variable(SymbolTable* table, char name[]) {
     }
 
     printf("Error: undefined variable %s\n", name);
-    Value err_val = {0, 0, NULL};
-    return err_val;
+
+    //{is_void, is_function, number, node, is_builtin, builtin_ptr}
+    // Value err_val = {1, 0, 0, NULL, 0, NULL};
+    // return err_val;
+
+    printf("Error: undefined variable '%s'\n", name);
+    exit(1); // crash program.
+}
+
+void update_variable(SymbolTable* table, char name[], Value value) {
+    //Check the local table
+    for(int i = 0; i < table -> count; i++) {
+        if(strcmp(table -> vars[i].name, name) == 0) {
+            table -> vars[i].value = value;
+            return;
+        }
+    }
+
+    //Check the parent table
+    if(table -> parent != NULL) {
+        update_variable(table -> parent, name, value);
+        return;
+    }
+    
+
+    printf("Error: cannot update undefined variable '%s'\n", name);
+    exit(1);
 }

@@ -107,3 +107,26 @@ ASTNode* create_call(char name[], ASTNode* args[], int arg_count) {
 
     return node;
 }
+
+ASTNode* create_while(ASTNode* condition, ASTNode* body) {
+    ASTNode* node = malloc(sizeof(ASTNode));
+
+    node -> type = AST_WHILE;
+    node -> left = condition;
+    node -> right = body;
+
+    return node;
+}
+
+//Updates vars
+ASTNode* create_update(char name[], ASTNode* value) {
+    ASTNode* node = malloc(sizeof(ASTNode));
+
+    node -> type = AST_UPDATE;
+    strcpy(node -> name, name);
+
+    node -> right = value;
+    node -> left = NULL;
+
+    return node;
+}
