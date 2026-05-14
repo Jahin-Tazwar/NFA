@@ -66,6 +66,7 @@ ASTNode* parse_factor(Parser* parser) {
         return parse_block(parser);
     }else {
         printf("Error: unexpected token\n");
+        advance_parser(parser);
         return NULL;
     }
     return node;

@@ -51,7 +51,7 @@ Token identifier(Lexer* lexer) {
 
     int i = 0;
 
-    while(isalpha(lexer -> current_char)) {
+    while(isalnum(lexer -> current_char) || lexer -> current_char == '_') {
         token.value[i++] = lexer -> current_char;
         advance(lexer);
     } 
@@ -193,7 +193,7 @@ Token get_next_token(Lexer* lexer) {
             
             Token token;
             token.type = TOKEN_UNKNOWN;
-            token.value[0] = lexer->current_char;
+            token.value[0] = '&';
             token.value[1] = '\0';
             return token;
         }
@@ -210,7 +210,7 @@ Token get_next_token(Lexer* lexer) {
 
             Token token;
             token.type = TOKEN_UNKNOWN;
-            token.value[0] = lexer->current_char;
+            token.value[0] = '|';
             token.value[1] = '\0';
             return token;
         }
