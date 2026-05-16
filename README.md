@@ -39,28 +39,36 @@ print(42)
 print(100 + 50)
 \`\`\`
 
-### 2. Variables & Scope
+### 2. Variables & Data Types
 NFA enforces explicit variable declaration. You must use the `let` keyword to create a new variable. 
-If a variable already exists, you can update it by assigning to it directly (without `let`). Variables are block-scoped and evaluate dynamically.
+NFA is dynamically typed and supports Numbers, Strings, and Arrays. Variables are block-scoped.
 
 \`\`\`javascript
 // Declaration
 let count = 10
-let multiplier = 5
+let msg = "Hello"
+let list = [1, 2, "three"]
 
 // Reassignment (Update)
-count = count * multiplier
-print(count) // 50
+count = count * 5
+print(count) 
 \`\`\`
 
-### 3. Math & Logic
+### 3. Arrays
+NFA supports composite Arrays that can hold any data type, including nested arrays.
+\`\`\`javascript
+let my_list = [10, "Gold", [1, 2]]
+print(my_list)
+\`\`\`
+
+### 4. Math & Logic
 NFA fully supports standard mathematical operations and comparison operators. It strictly respects the standard order of operations (PEMDAS).
 \`\`\`javascript
 let math_result = (5 + 5) * (20 / 2)
 let is_greater = 10 > 5
 \`\`\`
 
-### 4. Conditionals (Expressions)
+### 5. Conditionals (Expressions)
 Inspired by Rust, `if` statements in NFA are **expressions**. This means an `if` block evaluates to a value and can be assigned directly to a variable.
 \`\`\`javascript
 let threshold = 50
@@ -68,7 +76,7 @@ let status = if (threshold >= 50) 1 else 0
 print(status)
 \`\`\`
 
-### 5. Imperative Loops
+### 6. Imperative Loops
 NFA supports standard `while` loops for repetitive logic. The scope within a while loop is automatically managed—variables declared inside the loop will not leak to the outer scope, but you can freely update outer variables!
 \`\`\`javascript
 let x = 5
@@ -79,7 +87,7 @@ while (x > 0) {
 print(0) // Liftoff!
 \`\`\`
 
-### 6. Functions & Recursion
+### 7. Functions & Recursion
 You can define your own reusable logic blocks using the `fn` keyword. 
 NFA functions **automatically return** the result of their last evaluated expression. There is no need for an explicit `return` keyword.
 
@@ -100,7 +108,7 @@ fn factorial(n) {
 print(factorial(5)) // 120
 \`\`\`
 
-### 7. Comments
+### 8. Comments
 You can document your code using double-slash syntax.
 \`\`\`javascript
 // This is a comment!

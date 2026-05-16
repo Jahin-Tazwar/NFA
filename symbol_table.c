@@ -49,8 +49,6 @@ Value get_variable(SymbolTable* table, char name[]) {
         return get_variable(table -> parent, name);
     }
 
-    printf("Error: undefined variable %s\n", name);
-
     //{is_void, is_function, number, node, is_builtin, builtin_ptr}
     // Value err_val = {1, 0, 0, NULL, 0, NULL};
     // return err_val;

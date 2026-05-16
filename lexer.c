@@ -197,6 +197,24 @@ Token get_next_token(Lexer* lexer) {
             return token;
         }
 
+        if(lexer -> current_char == '[') {
+            advance(lexer);
+
+            Token token;
+            token.type = TOKEN_LBRACKET;
+            strcpy(token.value, "[");
+            return token;
+        }
+
+        if(lexer -> current_char == ']') {
+            advance(lexer);
+
+            Token token;
+            token.type = TOKEN_RBRACKET;
+            strcpy(token.value, "]");
+            return token;
+        }
+
         if(lexer -> current_char == '!') {
             advance(lexer);
             if(lexer -> current_char == '='){

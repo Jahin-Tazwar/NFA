@@ -139,3 +139,16 @@ ASTNode* create_update(char name[], ASTNode* value) {
 
     return node;
 }
+
+ASTNode* create_array(ASTNode** elements, int count) {
+    ASTNode* node = malloc(sizeof(ASTNode));
+
+    node -> type = AST_ARRAY;
+    node -> array_count = count;
+
+    for(int i = 0; i < count; i++) {
+        node -> array_elements[i] = elements[i];
+    }
+
+    return node;
+}

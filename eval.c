@@ -11,6 +11,9 @@ Value void_value() {
     v.is_function = 0;
     v.is_builtin = 0;
     v.is_string = 0;
+    v.is_array = 0;
+    v.array_elements = NULL;
+    v.array_count = 0;
     v.string_value = NULL;
     v.number = 0;
     return v;
@@ -22,13 +25,31 @@ Value number_to_value(int n) {
     value.number = n;
     value.is_string = 0;
     value.string_value = NULL;
+    value.is_array = 0;
+    value.array_elements = NULL;
+    value.array_count = 0;
     value.node = NULL;
     return value;
 }
 
 Value builtin_print(Value args[], int arg_count) {
     for(int i = 0; i < arg_count; i++) {
-        if(args[i].is_string) {
+        if(args[i].is_array) {
+            printf("[");
+
+            for(int j = 0; j < args[i].array_count; j++) {
+                if(args[i].array_elements[j].is_string) {
+                    printf("\"%s\"", args[i].array_elements[j].string_value);
+                } else {
+                    printf("%d", args[i].array_elements[j].number);
+                }
+                if(j < args[i].array_count - 1) {
+                    printf(", ");
+                }
+            }
+
+            printf("]");
+        }else if(args[i].is_string) {
             printf("%s ", args[i].string_value);
         }else {
             printf("%d ", args[i].number);
@@ -64,6 +85,21 @@ Value eval(ASTNode* node, SymbolTable* table) {
         value.is_string = 1;
 
         value.string_value = strdup(node -> string_value);
+        return value;
+    }
+
+    if(node -> type == AST_ARRAY) {
+        Value value = void_value();
+        value.is_void = 0;
+        value.is_array = 1;
+        value.array_count = node -> array_count;
+
+        value.array_elements = malloc(node -> array_count * sizeof(Value));
+
+        for(int i = 0; i < node -> array_count; i++) {
+            value.array_elements[i] = eval(node -> array_elements[i], table);
+        }
+
         return value;
     }
 

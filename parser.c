@@ -23,6 +23,22 @@ ASTNode* parse_factor(Parser* parser) {
     }else if(parser -> current_token.type == TOKEN_STRING) {
         node = create_string(parser -> current_token.value);
         advance_parser(parser);
+    }else if(parser -> current_token.type == TOKEN_LBRACKET) { // For arrays
+        advance_parser(parser); // skip [
+
+        ASTNode* elements[64];
+        int count = 0;
+
+        while(parser -> current_token.type != TOKEN_RBRACKET) {
+            elements[count++] = parse_if(parser);
+
+            if(parser -> current_token.type == TOKEN_COMMA) {
+                advance_parser(parser);
+            }
+        }
+
+        advance_parser(parser);
+        return create_array(elements, count);
     }else if(parser -> current_token.type == TOKEN_IDENTIFIER) {
         char value[64];
         strcpy(value, parser -> current_token.value);

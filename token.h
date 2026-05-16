@@ -3,6 +3,8 @@
 
 typedef enum {
     TOKEN_NUMBER,
+    TOKEN_STRING,
+
     TOKEN_LET,  
     TOKEN_IF,
     TOKEN_ELSE,
@@ -14,7 +16,6 @@ typedef enum {
                     └── etc.*/
 
     TOKEN_COMMA,
-    TOKEN_STRING,
 
     //Math operators
     TOKEN_PLUS,
@@ -45,6 +46,10 @@ typedef enum {
     //{}
     TOKEN_LCURLY,
     TOKEN_RCURLY,
+
+    //[] for arrays
+    TOKEN_LBRACKET,
+    TOKEN_RBRACKET,
 
     TOKEN_EOF, //End of file
     TOKEN_UNKNOWN // for unknown characters.

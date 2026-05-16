@@ -49,6 +49,7 @@ void print_ast(ASTNode* node, int depth) {
 int main() {
     SymbolTable table;
     table.count = 0;
+    table.parent = NULL;
 
     setup_builtins(&table);
 

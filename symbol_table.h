@@ -9,6 +9,10 @@ struct Value;
 typedef struct Value {
     int is_void;
 
+    int is_array;
+    struct Value* array_elements;
+    int array_count;
+
     int is_function;
     int number;
     struct ASTNode* node;

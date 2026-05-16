@@ -6,6 +6,7 @@
 typedef enum {
     AST_NUMBER,
     AST_STRING,
+    AST_ARRAY,
 
     AST_VARIABLE,
     AST_ASSIGN,
@@ -34,6 +35,9 @@ typedef struct ASTNode {
 
     char string_value[256];
 
+    struct ASTNode* array_elements[64];
+    int array_count;
+
     char params[16][64]; // Function parameters
     int param_count;
 
@@ -59,5 +63,6 @@ ASTNode* create_function(char name[], char params[][64], int param_count, ASTNod
 ASTNode* create_call(char name[], ASTNode* args[], int arg_count);
 ASTNode* create_while(ASTNode* condition, ASTNode* body);
 ASTNode* create_update(char name[], ASTNode* value);
+ASTNode* create_array(ASTNode** elements, int count);
 
 #endif
