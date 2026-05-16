@@ -20,6 +20,9 @@ ASTNode* parse_factor(Parser* parser) {
     if(parser -> current_token.type == TOKEN_NUMBER) {
         node = create_number(atoi(parser -> current_token.value));
         advance_parser(parser);
+    }else if(parser -> current_token.type == TOKEN_STRING) {
+        node = create_string(parser -> current_token.value);
+        advance_parser(parser);
     }else if(parser -> current_token.type == TOKEN_IDENTIFIER) {
         char value[64];
         strcpy(value, parser -> current_token.value);

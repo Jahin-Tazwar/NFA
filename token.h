@@ -14,6 +14,7 @@ typedef enum {
                     └── etc.*/
 
     TOKEN_COMMA,
+    TOKEN_STRING,
 
     //Math operators
     TOKEN_PLUS,

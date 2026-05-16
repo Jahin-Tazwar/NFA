@@ -10,6 +10,8 @@ Value void_value() {
     v.is_void = 1;
     v.is_function = 0;
     v.is_builtin = 0;
+    v.is_string = 0;
+    v.string_value = NULL;
     v.number = 0;
     return v;
 }
@@ -18,13 +20,19 @@ Value number_to_value(int n) {
     Value value;
     value.is_function = 0;
     value.number = n;
+    value.is_string = 0;
+    value.string_value = NULL;
     value.node = NULL;
     return value;
 }
 
 Value builtin_print(Value args[], int arg_count) {
     for(int i = 0; i < arg_count; i++) {
-        printf("%d ", args[i].number);
+        if(args[i].is_string) {
+            printf("%s ", args[i].string_value);
+        }else {
+            printf("%d ", args[i].number);
+        }
     }
 
     printf("\n");
@@ -48,6 +56,15 @@ Value eval(ASTNode* node, SymbolTable* table) {
 
     if (node->type == AST_NUMBER) {
         return number_to_value(node->value);
+    }
+
+    if(node -> type == AST_STRING) {
+        Value value = void_value();
+        value.is_void = 0;
+        value.is_string = 1;
+
+        value.string_value = strdup(node -> string_value);
+        return value;
     }
 
     if(node -> type == AST_VARIABLE) {

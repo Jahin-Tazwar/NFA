@@ -32,6 +32,15 @@ ASTNode* create_op(char op[], ASTNode* left, ASTNode* right) {
     return node;
 }
 
+ASTNode* create_string(char text[]) {
+    ASTNode* node = malloc(sizeof(ASTNode));
+
+    node -> type = AST_STRING;
+    strcpy(node -> string_value, text);
+
+    return node;
+}
+
 ASTNode* create_if(ASTNode* condition, ASTNode* true_branch, ASTNode* false_branch) {
     ASTNode* node = malloc(sizeof(ASTNode));
 

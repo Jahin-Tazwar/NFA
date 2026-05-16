@@ -85,6 +85,24 @@ Token get_next_token(Lexer* lexer) {
             return number(lexer);
         }
 
+        if(lexer -> current_char == '"') {
+            advance(lexer); // skip "
+
+            Token token;
+            token.type = TOKEN_STRING;
+            int i = 0;
+
+            while(lexer -> current_char != '"' && lexer -> current_char != '\0') {
+                token.value[i++] = lexer -> current_char;
+                advance(lexer);
+            }
+
+            token.value[i] = '\0';
+            advance(lexer);
+
+            return token;
+        }
+
         if(isalpha(lexer -> current_char)) {
             return identifier(lexer);
         }

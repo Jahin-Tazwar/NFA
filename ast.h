@@ -5,6 +5,8 @@
 
 typedef enum {
     AST_NUMBER,
+    AST_STRING,
+
     AST_VARIABLE,
     AST_ASSIGN,
     AST_UPDATE, //update vars
@@ -30,6 +32,8 @@ typedef struct ASTNode {
     char op[8]; // For binary operators and comparison operators
     int value; // only for numbers
 
+    char string_value[256];
+
     char params[16][64]; // Function parameters
     int param_count;
 
@@ -46,6 +50,7 @@ typedef struct ASTNode {
 
 ASTNode* create_number(int value);
 ASTNode* create_op(char op[], ASTNode* left, ASTNode* right);
+ASTNode* create_string(char text[]);
 ASTNode* create_variable(char name[]);
 ASTNode* create_assignment(char name[], ASTNode* value);
 ASTNode* create_if(ASTNode* condition, ASTNode* true_branch, ASTNode* false_branch);

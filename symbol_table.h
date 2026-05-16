@@ -15,6 +15,9 @@ typedef struct Value {
 
     int is_builtin;
     struct Value (*builtin)(struct Value* args, int arg_count);
+
+    int is_string;
+    char* string_value;
 } Value;
 
 
