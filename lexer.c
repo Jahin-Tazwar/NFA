@@ -149,6 +149,14 @@ Token get_next_token(Lexer* lexer) {
             return token;
         }
 
+        if(lexer -> current_char == '%') {
+            advance(lexer);
+            Token token;
+            token.type = TOKEN_MOD;
+            strcpy(token.value, "%");
+
+            return token;
+        }
 
         if(lexer -> current_char == '=') {
             advance(lexer);

@@ -22,6 +22,7 @@ typedef enum {
     TOKEN_MINUS,
     TOKEN_SLASH,
     TOKEN_STAR,
+    TOKEN_MOD,
     TOKEN_EQUAL, // for assignment
     
     //Compare operators

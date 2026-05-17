@@ -129,7 +129,7 @@ ASTNode* parse_factor(Parser* parser) {
 ASTNode* parse_term(Parser* parser) {
     ASTNode* left = parse_factor(parser);
 
-    while(parser -> current_token.type == TOKEN_STAR || parser -> current_token.type == TOKEN_SLASH) {   
+    while(parser -> current_token.type == TOKEN_STAR || parser -> current_token.type == TOKEN_SLASH || parser -> current_token.type == TOKEN_MOD) {   
         char op[8];
         strcpy(op, parser -> current_token.value);
         advance_parser(parser);

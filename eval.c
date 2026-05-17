@@ -322,6 +322,21 @@ Value eval(ASTNode* node, SymbolTable* table) {
         Value right_val = eval(node->right, table);
 
         if (strcmp(node -> op, "+") == 0) {
+
+            //For string concat
+            if(left_val.is_string && right_val.is_string) {
+                Value str = void_value();
+                str.is_void = 0;
+                str.is_string = 1;
+
+                char* new_str = malloc(strlen(left_val.string_value) + strlen(right_val.string_value) + 1);
+                strcpy(new_str, left_val.string_value);
+                strcat(new_str, right_val.string_value);
+
+                str.string_value = new_str;
+
+                return str;
+            }
             return number_to_value(left_val.number + right_val.number);
         } 
         else if (strcmp(node -> op, "-") == 0) {
@@ -336,6 +351,13 @@ Value eval(ASTNode* node, SymbolTable* table) {
                 return number_to_value(0);
             }
             return number_to_value(left_val.number / right_val.number);
+        }else if(strcmp(node -> op, "%") == 0) {
+            if (right_val.number == 0) {
+                printf("Error: division by zero\n");
+                return number_to_value(0);
+            }
+
+            return number_to_value(left_val.number % right_val.number);
         }
 
         printf("Error: unknown operator %s\n", node->op);
