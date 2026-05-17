@@ -162,3 +162,14 @@ ASTNode* create_index(ASTNode* array, ASTNode* index) {
 
     return node;
 }
+
+ASTNode* create_index_update(ASTNode* array, ASTNode* index, ASTNode* value) {
+    ASTNode* node = malloc(sizeof(ASTNode));
+
+    node -> type = AST_INDEX_UPDATE;
+    node -> left = array;
+    node -> right = index;
+    node -> third = value;
+
+    return node;
+}

@@ -84,6 +84,15 @@ ASTNode* parse_factor(Parser* parser) {
             }
             
             advance_parser(parser);
+
+            if(parser -> current_token.type == TOKEN_EQUAL) {
+                advance_parser(parser);
+                
+                ASTNode* updated_value = parse_if(parser);
+
+                return create_index_update(node, index, updated_value);
+            }
+
             return create_index(node, index);
         }
 

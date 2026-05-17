@@ -15,6 +15,7 @@ typedef enum {
     AST_IF,
 
     AST_INDEX, //for array[index]
+    AST_INDEX_UPDATE, // For arr[idx] = value
 
     //Function
     AST_FN,
@@ -67,5 +68,6 @@ ASTNode* create_while(ASTNode* condition, ASTNode* body);
 ASTNode* create_update(char name[], ASTNode* value);
 ASTNode* create_array(ASTNode** elements, int count);
 ASTNode* create_index(ASTNode* array, ASTNode* index);
+ASTNode* create_index_update(ASTNode* array, ASTNode* index, ASTNode* value) ;
 
 #endif

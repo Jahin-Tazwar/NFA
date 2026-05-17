@@ -21,7 +21,9 @@ Value void_value() {
 
 Value number_to_value(int n) {
     Value value;
+    value.is_void = 0;
     value.is_function = 0;
+    value.is_builtin = 0;
     value.number = n;
     value.is_string = 0;
     value.string_value = NULL;
@@ -72,13 +74,40 @@ Value builtin_print(Value args[], int arg_count) {
     return void_value();
 }
 
+Value builtin_len(Value args[], int arg_count) {
+    Value length = void_value();
+    length.is_void = 0;
+
+    if(arg_count != 1) {
+        printf("Error: too many arguments. Expected 1");
+        exit(1);
+    }
+
+    if(args[0].is_array) {
+        length.number = args[0].array_count;
+        return length;
+    }else if(args[0].is_string) {
+        length.number = strlen(args[0].string_value);
+        return length;
+    }
+
+    printf("Error: Unexpected argument type. Expected array or string");
+    exit(1);
+}
+
 void setup_builtins(SymbolTable* table) {
     Value print_val;
     print_val.is_function = 0;
     print_val.is_builtin = 1;
     print_val.builtin = builtin_print;
 
+    Value len_val = void_value();
+    len_val.is_void = 0;
+    len_val.is_builtin = 1;
+    len_val.builtin = builtin_len;
+
     set_variable(table, "print", print_val);
+    set_variable(table, "len", len_val);
 }
 
 Value eval(ASTNode* node, SymbolTable* table) {
@@ -154,6 +183,30 @@ Value eval(ASTNode* node, SymbolTable* table) {
         Value value = eval(node -> right, table);
         
         update_variable(table, node -> name, value);
+
+        return void_value();
+    }
+
+    // arr[idx] = value
+    if(node -> type == AST_INDEX_UPDATE) {
+        Value arr = eval(node -> left, table);
+        Value idx = eval(node -> right, table);
+        Value updated_value = eval(node -> third, table);
+
+        if(!arr.is_array) {
+            printf("Error: Cannot assign to non-array element\n");
+            exit(1);
+        }
+        if(idx.is_string || idx.is_array) {
+            printf("Error: Array index must be a number\n");
+            exit(1);
+        }
+        if(idx.number < 0 || idx.number >= arr.array_count) {
+            printf("Error: Index out of bounds!\n");
+            exit(1);
+        }
+
+        arr.array_elements[idx.number] = updated_value;
 
         return void_value();
     }
