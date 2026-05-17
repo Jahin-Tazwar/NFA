@@ -25,6 +25,8 @@ emcc web_bridge.c ast.c lexer.c parser.c eval.c symbol_table.c \
   -o frontend/public/nfa.js \
   -s EXPORTED_FUNCTIONS='["_run_nfa"]' \
   -s EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
+  -s MODULARIZE=1 \
+  -s EXPORT_NAME="createNfaModule" \
   -s STACK_SIZE=524288 \
   -O3
 \`\`\`
