@@ -115,6 +115,29 @@ Value eval(ASTNode* node, SymbolTable* table) {
         return value;
     }
 
+    if(node -> type == AST_INDEX) {
+        Value arr = eval(node -> left, table);
+        Value idx = eval(node -> right, table);
+
+        if(!arr.is_array) {
+            printf("Error: Cannot index a non-array value\n");
+            exit(1);
+        }
+
+        if(idx.is_string || idx.is_array) {
+            printf("Error: Array index must be a number\n");
+            exit(1);
+        }
+
+        if(idx.number < 0 || idx.number >= arr.array_count) {
+            printf("Error: Index out of bounds!\n");
+            exit(1);
+        }
+
+        return arr.array_elements[idx.number];
+    }
+
+
     if(node -> type == AST_VARIABLE) {
         return get_variable(table, node -> name);
     }

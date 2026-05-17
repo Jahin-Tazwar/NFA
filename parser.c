@@ -71,6 +71,22 @@ ASTNode* parse_factor(Parser* parser) {
         }
 
         ASTNode* node = create_variable(value);
+
+        // For array indexing
+        if(parser -> current_token.type == TOKEN_LBRACKET) {
+            advance_parser(parser); // skip [
+
+            ASTNode* index = parse_if(parser);
+
+            if(parser -> current_token.type != TOKEN_RBRACKET) {
+                printf("Error: Expected ']' but got %s\n", parser -> current_token.value);
+                exit(1);
+            }
+            
+            advance_parser(parser);
+            return create_index(node, index);
+        }
+
         return node;
     }else if(parser -> current_token.type == TOKEN_NOT){
         char op[8] = "!";

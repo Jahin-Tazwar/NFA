@@ -152,3 +152,13 @@ ASTNode* create_array(ASTNode** elements, int count) {
 
     return node;
 }
+
+ASTNode* create_index(ASTNode* array, ASTNode* index) {
+    ASTNode* node = malloc(sizeof(ASTNode));
+
+    node -> type = AST_INDEX;
+    node -> left = array;
+    node -> right = index;
+
+    return node;
+}

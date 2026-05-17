@@ -14,6 +14,8 @@ typedef enum {
 
     AST_IF,
 
+    AST_INDEX, //for array[index]
+
     //Function
     AST_FN,
     AST_CALL,
@@ -64,5 +66,6 @@ ASTNode* create_call(char name[], ASTNode* args[], int arg_count);
 ASTNode* create_while(ASTNode* condition, ASTNode* body);
 ASTNode* create_update(char name[], ASTNode* value);
 ASTNode* create_array(ASTNode** elements, int count);
+ASTNode* create_index(ASTNode* array, ASTNode* index);
 
 #endif
