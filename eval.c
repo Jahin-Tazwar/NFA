@@ -234,10 +234,12 @@ Value eval(ASTNode* node, SymbolTable* table) {
 
         return void_value();
     }
+
     if(node -> type == AST_CALL) {
         Value func = get_variable(table, node -> name);
 
-        Value arg_values[16];
+        // Dynamically allocate to avoid stack frame bloat in WASM
+        Value* arg_values = malloc(16 * sizeof(Value));
         for(int i = 0; i < node -> arg_count; i++) {
             arg_values[i] = eval(node -> args[i], table);
         }
@@ -257,14 +259,19 @@ Value eval(ASTNode* node, SymbolTable* table) {
             Value res = eval(func_node -> right, local_table);
             
             free(local_table); // Clean up the memory!
+            free(arg_values);  // Free heap array!
             return res;
         }else if(func.is_builtin){
-            return func.builtin(arg_values, node -> arg_count);
+            Value res = func.builtin(arg_values, node -> arg_count);
+            free(arg_values);  // Free heap array!
+            return res;
         } else {
             printf("Error: %s is not a function\n", node->name);
+            free(arg_values);  // Free heap array!
             return number_to_value(0);
         }
     }
+
 
     if(node -> type == AST_IF) {
         Value condition = eval(node -> left, table);
