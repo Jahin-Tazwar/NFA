@@ -41,12 +41,13 @@ print(100 + 50)
 
 ### 2. Variables & Data Types
 NFA enforces explicit variable declaration. You must use the `let` keyword to create a new variable. 
-NFA is dynamically typed and supports Numbers, Strings, and Arrays. Variables are block-scoped.
+NFA is dynamically typed and supports Numbers, Strings, and Arrays. Variables are block-scoped. 
+Strings can be dynamically concatenated using the `+` operator.
 
 \`\`\`javascript
 // Declaration
 let count = 10
-let msg = "Hello"
+let msg = "Hello " + "World" // "Hello World"
 let list = [1, 2, "three"]
 
 // Reassignment (Update)
@@ -54,17 +55,27 @@ count = count * 5
 print(count) 
 \`\`\`
 
-### 3. Arrays
-NFA supports composite Arrays that can hold any data type, including nested arrays.
+### 3. Arrays & Built-ins
+NFA supports composite Arrays that can hold any data type, including nested arrays. Elements can be read and written in-place using bracket indexing. You can query the length of arrays (and strings!) using the `len()` built-in function.
+
 \`\`\`javascript
 let my_list = [10, "Gold", [1, 2]]
-print(my_list)
+
+// Indexing and Mutability
+print(my_list[0]) // Reads 10
+my_list[0] = 50 // Updates in-place
+print(my_list) // [50, "Gold", [1, 2]]
+
+// Length querying
+print(len(my_list)) // 3
+print(len("NFA")) // 3
 \`\`\`
 
 ### 4. Math & Logic
-NFA fully supports standard mathematical operations and comparison operators. It strictly respects the standard order of operations (PEMDAS).
+NFA fully supports standard mathematical operations (including modulo `%`) and comparison operators. It strictly respects the standard order of operations (PEMDAS).
 \`\`\`javascript
 let math_result = (5 + 5) * (20 / 2)
+let mod_result = 10 % 3 // 1
 let is_greater = 10 > 5
 \`\`\`
 
