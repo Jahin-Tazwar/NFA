@@ -32,30 +32,42 @@ Value number_to_value(int n) {
     return value;
 }
 
+static void print_value_rec(Value val, int quote_strings) {
+    if (val.is_array) {
+        printf("[");
+        for (int j = 0; j < val.array_count; j++) {
+            // Recursion! Call ourselves to print this element
+            print_value_rec(val.array_elements[j], 1);
+            
+            if (j < val.array_count - 1) {
+                printf(", ");
+            }
+        }
+        printf("]");
+    } else if (val.is_string) {
+        if (quote_strings) {
+            printf("\"%s\"", val.string_value); // Quote strings inside arrays
+        } else {
+            printf("%s", val.string_value);       // Plain print for top-level strings
+        }
+    } else if (val.is_function) {
+        printf("<function>");
+    } else if (val.is_void) {
+        // Do nothing
+    } else {
+        printf("%d", val.number);
+    }
+}
+
+
 Value builtin_print(Value args[], int arg_count) {
     for(int i = 0; i < arg_count; i++) {
-        if(args[i].is_array) {
-            printf("[");
+        print_value_rec(args[i], 0);
 
-            for(int j = 0; j < args[i].array_count; j++) {
-                if(args[i].array_elements[j].is_string) {
-                    printf("\"%s\"", args[i].array_elements[j].string_value);
-                } else {
-                    printf("%d", args[i].array_elements[j].number);
-                }
-                if(j < args[i].array_count - 1) {
-                    printf(", ");
-                }
-            }
-
-            printf("]");
-        }else if(args[i].is_string) {
-            printf("%s ", args[i].string_value);
-        }else {
-            printf("%d ", args[i].number);
+        if(i < arg_count - 1) {
+            printf(" ");
         }
     }
-
     printf("\n");
     return void_value();
 }
