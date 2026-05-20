@@ -49,11 +49,11 @@ const char* run_nfa(const char* input) {
         return "";
     }
 
-    if (!last_result.is_void) {
-        if (last_result.is_function) {
+    if (last_result.type != VAL_VOID) {
+        if (last_result.type == VAL_FUNCTION) {
             printf("<function>\n");
         } else {
-            printf("%d\n", last_result.number);
+            printf("%d\n", last_result.as.number);
         }
     }
 

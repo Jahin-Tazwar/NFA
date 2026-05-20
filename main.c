@@ -89,11 +89,11 @@ int main() {
 
         Value result = eval(node, &table);
 
-        if (!result.is_void) {
-            if (result.is_function) {
+        if (result.type != VAL_VOID) {
+            if (result.type == VAL_FUNCTION) {
                 printf("<function>\n");
             } else {
-                printf("%d\n", result.number);
+                printf("%d\n", result.as.number);
             }
         }
     }

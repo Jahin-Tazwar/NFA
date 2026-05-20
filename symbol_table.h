@@ -4,24 +4,37 @@
 #include "ast.h"
 
 
+typedef enum {
+    VAL_VOID,
+    VAL_NUMBER,
+    VAL_STRING,
+    VAL_ARRAY,
+    VAL_BOOL,
+    VAL_FUNCTION,
+    VAL_BUILTIN
+} ValueType;
+
 struct Value; 
 
 typedef struct Value {
-    int is_void;
+    ValueType type;
 
-    int is_array;
-    struct Value* array_elements;
-    int array_count;
+    union {
+        int number;
+        int boolean;
+        char* string_value;
+        //For arrays
+        struct {
+            struct Value* elements;
+            int count;
+        } array;
 
-    int is_function;
-    int number;
-    struct ASTNode* node;
+        struct {
+            struct ASTNode* node;
+        } function;
 
-    int is_builtin;
-    struct Value (*builtin)(struct Value* args, int arg_count);
-
-    int is_string;
-    char* string_value;
+        struct Value (*builtin)(struct Value* args, int arg_count);
+    } as;
 } Value;
 
 
